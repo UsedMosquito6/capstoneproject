@@ -23,4 +23,5 @@ Asteroids type game. (Space asteroid shooter)
 ## Nice to Have List
 
 -After ship thrust, ship decelerates without any further input
+
 -Different game modes (time limit, no shooting survival, aliens, ect)
