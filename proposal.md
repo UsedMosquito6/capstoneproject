@@ -8,17 +8,17 @@ Asteroids type game. (Space asteroid shooter)
 
 -Bullets that fire where the ship is pointing (with restriction on how far they can travel)
 
--Asteroids that come from a random direction and break up when shot.
+-Asteroids that come from a random direction and break up when shot
 
--when something travels off of the screen, they are teleported to the oposite edge.
+-When something travels off of the screen, they are teleported to the oposite edge
 
 -Main menu with buttions / settings
 
--point counter
+-Point counter
 
--set amount of lives
+-Set amount of lives
 
--game over screen
+-Game over screen
 
 ## Nice to Have List
 
