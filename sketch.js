@@ -7,7 +7,8 @@
 
 let x, y;
 let theta = 0;
-let speed = 4;
+let speed = 0;
+let friction = 0.99;
 
 function setup() {
   createCanvas(800, 600);
@@ -39,17 +40,22 @@ function displayShip() {
 
 function moveShip() {
   if (keyIsDown(UP_ARROW)) {
-    startMoving();
+    if (speed < 5) {
+      speed += 0.1;
+    }
+    x += cos(theta) * speed;
+    y += sin(theta) * speed;
+  }
+  else {
+    speed *= friction;
+    speed *= friction;
+    x += cos(theta) * speed;
+    y += sin(theta) * speed;
   }
   if (keyIsDown(RIGHT_ARROW)) {
-    theta += 5;
+    theta += 4;
   }
   if (keyIsDown(LEFT_ARROW)) {
-    theta -= 5;
+    theta -= 4;
   }
-}
-
-function startMoving() {
-  x += cos(theta) * speed;
-  y += sin(theta) * speed;
 }
