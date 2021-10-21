@@ -5,12 +5,15 @@
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
 
+
+// let dx = 0;
+// let dy = 0;
+
 let x, y;
-let r = 0;
 let theta = 0;
-let dx = 0;
-let dy = 0;
-let speed = 0;
+let vx = 0;
+let vy = 0;
+let ay;
 let friction = 0.99;
 
 function setup() {
@@ -43,18 +46,10 @@ function displayShip() {
 
 function moveShip() {
   if (keyIsDown(UP_ARROW)) {
-    if (dx < 6 || dy < 6) {
-      dx += 0.1;
-      dy += 0.1;
-    }
-    x += cos(theta) * dx;
-    y += sin(theta) * dy;
+    moveForward();
   }
   else {
-    dx *= friction;
-    dy *= friction;
-    x += cos(theta) * dx;
-    y += sin(theta) * dy;
+    stopMoving();
   }
   if (keyIsDown(RIGHT_ARROW)) {
     theta += 4;
@@ -62,4 +57,21 @@ function moveShip() {
   if (keyIsDown(LEFT_ARROW)) {
     theta -= 4;
   }
+}
+
+function moveForward() {
+  x += vx;
+  y += vy;
+  vx += cos(theta) * 0.05;
+  vy += sin(theta) * 0.05;
+}
+
+function stopMoving() {
+  vx *= friction;
+  vy *= friction;
+  x += vx;
+  y += vy;
+  console.log(vx);
+  console.log(vy);
+
 }
