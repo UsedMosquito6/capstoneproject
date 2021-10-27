@@ -4,7 +4,7 @@
 //
 // Extra for Experts:
 // - describe what you did to take this project "above and beyond"
-
+let bgColor = "black";
 let x, y, ay;
 let theta = 0;
 let vx = 0;
@@ -27,8 +27,14 @@ function setup() {
 }
 
 function draw() {
-  background(220);
-
+  background(bgColor);
+  for (let i = 0; i<ballArray.length; i++){
+    for (let j = 0; j < asteroidArray.length; j++){
+      if ( i !== j){
+        checkBulletColision(ballArray[i], asteroidArray[j]);
+      }
+    }
+  }
   displayBall();
   moveBall();
 
@@ -38,7 +44,6 @@ function draw() {
   moveShip();
   displayShip();
   checkIfOnScreen();
-
 }
 
 function displayShip() {
@@ -78,9 +83,6 @@ function moveShip() { // Movement
   else {
     stopMoving();
     thrust = false;
-  }
-  if (keyIsDown(49)) {
-    spawnAsteroid();
   }
 }
 
@@ -154,35 +156,33 @@ function checkIfOnScreen() {
 }
 
 function spawnBall() {  //Bullet Array
-  push();
-  translate (x, y);
+
   let newBall = {
-    bx: 0,
-    by: 0,
+    bx: x,
+    by: y,
     totalX: 0,
     totalY: 0,
     radius: 3,
-    ballColor: "grey",
-    changeX: cos(theta) * bSpeed,
-    changeY: sin(theta) * bSpeed,
+    color: "white",
+    dx: cos(theta) * bSpeed,
+    dy: sin(theta) * bSpeed,
   };
   ballArray.push(newBall);    
-  pop();
 }
 
 function displayBall() {
   for (let ball of ballArray) {
-    fill(ball.ballColor);
-    circle(ball.bx, ball.by, ball.radius);
+    fill(ball.color);
+    circle(ball.bx, ball.by, ball.radius * 2);
   }
 }
 
 function moveBall() {
   for (let theBall of ballArray) {
-    theBall.bx += theBall.changeX;
-    theBall.by += theBall.changeY;
-    theBall.totalX += theBall.changeX;
-    theBall.totalY += theBall.changeY;
+    theBall.bx += theBall.dx;
+    theBall.by += theBall.dy;
+    theBall.totalX += theBall.dx;
+    theBall.totalY += theBall.dy;
     if (theBall.totalX > 550 || theBall.totalX < -550 || theBall.totalY > 550 || theBall.totalY < -550) {
       ballArray.shift();
     }
@@ -197,17 +197,15 @@ function keyPressed() { //Shoot
   }
 }
 
-
-
 function spawnAsteroid() {  //Asteroid Array
   let newAsteroid = {
     x: 0,
     y: 0,
     radius: 50,
-    asteroidColor: "grey",
+    color: "grey",
     side: round(random(1,4)),
-    changeX: cos(random(360)) * 2,
-    changeY: sin(random(360)) * 2,
+    dx: cos(random(360)) * 2,
+    dy: sin(random(360)) * 2,
   };
   for (let asteroid of asteroidArray) {
     if (asteroid.side === 1) {
@@ -231,29 +229,32 @@ function spawnAsteroid() {  //Asteroid Array
 }
 
 function displayAsteroid() {
-  for (let i = 0; i<ballArray.length; i++){
-    for (let j = 0; j < asteroidArray.length; j++){
-      checkColisionWith(asteroidArray[j], ballArray[i]);
-    }
-  }
   for (let asteroid of asteroidArray) {
-    fill(asteroid.asteroidColor);
-    circle(asteroid.x, asteroid.y, asteroid.radius);
+    fill(asteroid.color);
+    circle(asteroid.x, asteroid.y, asteroid.radius * 2);
   }
 }
 
 function moveAsteroid() {
   for (let theAsteroid of asteroidArray) {
-    theAsteroid.x += theAsteroid.changeX;
-    theAsteroid.y += theAsteroid.changeY;
+    theAsteroid.x += theAsteroid.dx;
+    theAsteroid.y += theAsteroid.dy;
   }
 }
 
-function checkColisionWith(asteroid, ball) {
-  let distanceBetween = dist(ball.x, ball.y, asteroid.x, asteroid.y);
-  let radiSum = ball.radius + asteroid.radius;
-  if (distanceBetween < radiSum){
-    asteroidArray.delete(asteroid);
-  }
-
+function mousePressed() {
+  spawnAsteroid();
+  spawnAsteroid();
+  spawnAsteroid();
 }
+
+function checkBulletColision(bullet, asteroid) {
+  let distanceBetween = dist(bullet.x, bullet.y, asteroid.x, asteroid.y);
+  let radiSum = bullet.radius + asteroid.radius;
+  if (distanceBetween < radiSum) {
+    asteroid.color = "red";
+    bullet.color = "indigo";
+    bgColor = "red";
+  }
+}
+
