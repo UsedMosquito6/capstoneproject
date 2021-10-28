@@ -26,20 +26,22 @@ function setup() {
 }
 
 function draw() {
-  for (let j = 0; j < asteroidArray.length; j++) {
-    asteroidArray[j].display();
-    asteroidArray[j].move();
+  background(bgColor);
+  for (let asteroid of asteroidArray) {
+    asteroid.display();
+    asteroid.move();
   }
-
+  for (let bullet of bulletArray) {
+    bullet.display();
+    bullet.move();
+  }
   for (let i = 0; i<bulletArray.length; i++){
     for (let j = 0; j < asteroidArray.length; j++){
-      checkBulletColision(bulletArray[i], asteroidArray[j]);
+      if (checkBulletColision(bulletArray[i], asteroidArray[j])) {
+        splice(asteroidArray, asteroidArray[j]);
+      }
     }
-    bulletArray[i].display();
-    bulletArray[i].move();
   }
-  
-  background(bgColor);
   moveShip();
   displayShip();
   checkIfOnScreen();
@@ -158,7 +160,7 @@ function checkIfOnScreen() {
 
 class Bullet {
   constructor(x, y){
-    this.x =x;
+    this.x = x;
     this.y = y;
     this.totalX = 0;
     this.totalY = 0;
@@ -198,24 +200,24 @@ class Asteroid {
     this.radius = 25;
     this.color = "grey";
     this.angle = random(360);
-    this.side = round(random(1,4));
+    this.randomSide = round(random(1,4));
     this.dx = cos(this.angle) * 2;
     this.dy = sin(this.angle) * 2;
   }
   side() {
-    if (this.side === 1) {
+    if (this.randomSide === 1) {
       this.x = random(width);
       this.y = 0 - this.radius;
     }
-    if (this.side === 2) {
+    if (this.randomSide === 2) {
       this.x = width + this.radius;
       this.y = random(height);
     }
-    if (this.side === 3) {
+    if (this.randomSide === 3) {
       this.x = random(width);
       this.y = height + this.radius;
     }
-    if (this.side === 4) {
+    if (this.randomSide === 4) {
       this.x = 0 - this.radius;
       this.y = random(height);
     }
@@ -233,15 +235,20 @@ class Asteroid {
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function mousePressed() {
-  let myAsteroid = new Asteroid();
-  asteroidArray.push(myAsteroid);
+  for (let i = 0; i < 5; i++) {
+    let myAsteroid = new Asteroid();
+    asteroidArray.push(myAsteroid);
+  }
+  for (let asteroid of asteroidArray) {
+    asteroid.side();
+  }
 }
 
 function checkBulletColision(bullet, asteroid) {
   let distanceBetween = dist(bullet.x, bullet.y, asteroid.x, asteroid.y);
   let radiSum = bullet.radius + asteroid.radius;
   if (distanceBetween < radiSum) {
-    bgColor = "red";
+    return true;
   }
 }
 
