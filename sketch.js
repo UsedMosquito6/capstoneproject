@@ -30,11 +30,13 @@ let start = false;
 let gameOver = false;
 let cheats = false;
 let difficulty = 3;
-let bg;
+let bg, bg2, bg3;
 
 
 function preload() {
   bg =  loadImage("assets/stars.jpg");
+  bg2 = loadImage("assets/space.gif");
+  bg3 = loadImage("assets/blue-space.png");
 }
 
 
@@ -53,7 +55,7 @@ function draw() {
   else {
     startScreen();
     if (start === true) {
-      image(bg, width/2, height/ 2, 800, 800);
+      image(bg3, width/2, height/ 2, 800, 800);
       //background(bgColor);
       for (let asteroid of asteroidArray) {
         asteroid.display();
