@@ -1,7 +1,11 @@
 # Beta Testing
 
 # Person 1
-- stuff to change
+- Make the buttons on the title screen functional.
+
+- Add waves.
+
+- Add a way to lose.
 
 # Person 2
-- other stuff to change
+- Change the way it shoots. x = (width - x).
