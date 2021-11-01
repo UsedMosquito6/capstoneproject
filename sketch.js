@@ -31,12 +31,18 @@ let gameOver = false;
 let cheats = false;
 let difficulty = 3;
 let bg, bg2, bg3;
+let ship;
+let asteroid4, asteroid3, asteroid2, asteroid1;
 
 
 function preload() {
   bg =  loadImage("assets/stars.jpg");
   bg2 = loadImage("assets/space.gif");
-  //bg3 = loadImage("assets/blue-space.png");
+  bg3 = loadImage("assets/blue-space.jpg");
+  ship = loadImage("assets/ship.png");
+  asteroid4 = loadImage("assets/asteroid4.png");
+  asteroid3 = loadImage("assets/asteroid3.png");
+  asteroid2 = loadImage("assets/asteroid2.png");
 }
 
 
@@ -65,15 +71,15 @@ function draw() {
         bullet.display();
         bullet.move();
       }
-      for (let i = 0; i<bulletArray.length; i++){
-        for (let j = 0; j < asteroidArray.length; j++){
+      for (let i = bulletArray.length - 1; i>0; i--){
+        for (let j = asteroidArray.length - 1; j>0; j--){
           if (checkBulletColision(bulletArray[i], asteroidArray[j])) {
             points += 1;
             asteroidArray.splice(j, 1);
-            //bulletArray.splice(i, 1);
+            bulletArray.splice(i, 1);
+            
           }
         }
-
       }
       moveShip();
       displayShip();
@@ -85,24 +91,26 @@ function draw() {
 
 function displayShip() {
   push();
-  fill("white");
+  fill("#78C7FB");
+  stroke("#2486C7");
   translate(x, y);
   rotate(theta);
   if (thrust === true) {  // Rocket flame
     beginShape();
     vertex(0,0);
-    vertex(-5,-5);
-    vertex(-15,0);
-    vertex(-5,5);
+    vertex(-5,-3);
+    vertex(-20,0);
+    vertex(-5,3);
     endShape();
   }
-  beginShape();  // Ship
-  vertex(15, 0);
-  vertex(-15, 10);
-  vertex(-5, 0);
-  vertex(-15, -10);
-  vertex(15, 0);
-  endShape();
+  // beginShape();  // Ship
+  // vertex(15, 0);
+  // vertex(-15, 10);
+  // vertex(-5, 0);
+  // vertex(-15, -10);
+  // vertex(15, 0);
+  // endShape();
+  image(ship, 0, 0, 35, 35);
   pop();
 }
 
@@ -200,13 +208,13 @@ class Bullet {
     this.y = y;
     this.totalX = 0;
     this.totalY = 0;
-    this.radius = 3;
-    this.color = "white";
+    this.radius = 2;
+    this.color = "red";
     this.dx = cos(theta) * bSpeed;
     this.dy = sin(theta) * bSpeed;
   }
   display() {
-    stroke("black");
+    noStroke();
     fill(this.color);
     circle(this.x, this.y, this.radius * 2);
   }
@@ -240,6 +248,7 @@ class Asteroid {
     this.randomSide = round(random(1,4));
     this.dx = cos(this.angle) * 2;
     this.dy = sin(this.angle) * 2;
+    this.size = 3;
   }
   side() {
     if (this.randomSide === 1) {
@@ -260,13 +269,26 @@ class Asteroid {
     }
   }
   display() {
-    stroke("black");
-    fill(this.color);
-    circle(this.x, this.y, this.radius * 2);
+    noFill(); // Invisible hitbox
+    noStroke();
+    if (this.size === 3) {
+      circle(this.x, this.y, this.radius * 2);
+      image(asteroid4, this.x, this.y, this.radius * 2, this.radius * 2);
+    }
+    else if (this.size === 2) {
+      image(asteroid3, this.x, this.y, this.radius, this.radius);
+    }
+    else {
+      image(asteroid2, this.x, this.y, this.radius / 2, this.radius / 2);
+    }
+
   }
   move() {
     this.x += this.dx;
     this.y += this.dy;
+  }
+  rotate() {
+    rotate(this.r);
   }
 }
 
@@ -334,8 +356,6 @@ function displayPoints() {
   textAlign(CENTER, CENTER);
   text(str(points), width/2, 25);
 }
-
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class Button {
   constructor(y, text) {
