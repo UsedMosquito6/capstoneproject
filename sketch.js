@@ -21,7 +21,7 @@ let asteroidArray= [];
 let hit = false;
 
 let points = 0;
-let shipColor = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"];
+let shipColor = ["white", "red", "orange", "yellow", "green", "blue", "indigo", "violet"];
 let shipColorCounter = 0;
 let startButton, colorButton, difficultyButton;
 let difficultyWord = "easy";
@@ -31,21 +31,25 @@ let gameOver = false;
 let cheats = false;
 let difficulty = 3;
 let bg, bg2, bg3;
-let ship;
+let whiteS, redS, orangeS, yellowS, greenS, blueS, indigoS, violetS;
 let asteroid4, asteroid3, asteroid2, asteroid1;
-
 
 function preload() {
   bg =  loadImage("assets/stars.jpg");
   bg2 = loadImage("assets/space.gif");
   bg3 = loadImage("assets/blue-space.jpg");
-  ship = loadImage("assets/ship.png");
+  whiteS = loadImage("assets/ship.png");
+  redS = loadImage("assets/red.png");
+  orangeS = loadImage("assets/orange.png");
+  yellowS = loadImage("assets/yellow.png");
+  greenS = loadImage("assets/green.png");
+  blueS = loadImage("assets/blue.png");
+  indigoS = loadImage("assets/indigo.png");
+  violetS = loadImage("assets/violet.png");
   asteroid4 = loadImage("assets/asteroid4.png");
   asteroid3 = loadImage("assets/asteroid3.png");
   asteroid2 = loadImage("assets/asteroid2.png");
 }
-
-
 
 function setup() {
   createCanvas(800, 600);
@@ -62,7 +66,6 @@ function draw() {
     startScreen();
     if (start === true) {
       image(bg, width/2, height/ 2, 800, 800);
-      //background(bgColor);
       for (let asteroid of asteroidArray) {
         asteroid.display();
         asteroid.move();
@@ -71,13 +74,14 @@ function draw() {
         bullet.display();
         bullet.move();
       }
-      for (let i = bulletArray.length - 1; i>0; i--){
-        for (let j = asteroidArray.length - 1; j>0; j--){
-          if (checkBulletColision(bulletArray[i], asteroidArray[j])) {
+      let hasRemovedSomething = false;
+      for (let i = bulletArray.length - 1; i>=0; i--){
+        for (let j = asteroidArray.length - 1; j>=0; j--){
+          if (!hasRemovedSomething && checkBulletColision(bulletArray[i], asteroidArray[j])) {
             points += 1;
             asteroidArray.splice(j, 1);
             bulletArray.splice(i, 1);
-            
+            hasRemovedSomething = true;
           }
         }
       }
@@ -90,6 +94,7 @@ function draw() {
 }
 
 function displayShip() {
+  let shipColors = [whiteS, redS, orangeS, yellowS, greenS, blueS, indigoS, violetS];
   push();
   fill("#78C7FB");
   stroke("#2486C7");
@@ -110,7 +115,7 @@ function displayShip() {
   // vertex(-15, -10);
   // vertex(15, 0);
   // endShape();
-  image(ship, 0, 0, 35, 35);
+  image(shipColors[shipColorCounter], 0, 0, 35, 35);
   pop();
 }
 
@@ -171,17 +176,17 @@ function checkIfOnScreen() {
     y = height;
   }
   for (let bullet of bulletArray) {
-    if (bullet.x > width) {
-      bullet.x = 0;
+    if (bullet.bx > width) {
+      bullet.bx = 0;
     }
-    if (bullet.x < 0) {
-      bullet.x = width;
+    if (bullet.bx < 0) {
+      bullet.bx = width;
     }
-    if (bullet.y > height) {
-      bullet.y = 0;
+    if (bullet.by > height) {
+      bullet.by = 0;
     }
-    if (bullet.y < 0) {
-      bullet.y = height;
+    if (bullet.by < 0) {
+      bullet.by = height;
     }
   }
   for (let asteroid of asteroidArray) {
@@ -204,23 +209,22 @@ function checkIfOnScreen() {
 
 class Bullet {
   constructor(x, y){
-    this.x = x;
-    this.y = y;
+    this.bx = x;
+    this.by = y;
     this.totalX = 0;
     this.totalY = 0;
     this.radius = 2;
-    this.color = "red";
     this.dx = cos(theta) * bSpeed;
     this.dy = sin(theta) * bSpeed;
   }
   display() {
     noStroke();
-    fill(this.color);
-    circle(this.x, this.y, this.radius * 2);
+    fill(shipColor[shipColorCounter]);
+    circle(this.bx, this.by, this.radius * 2);
   }
   move() {
-    this.x += this.dx;
-    this.y += this.dy;
+    this.bx += this.dx;
+    this.by += this.dy;
     this.totalX += this.dx;
     this.totalY += this.dy;
     if (this.totalX > 550 || this.totalX < -550 || this.totalY > 550 || this.totalY < -550) {
@@ -269,7 +273,7 @@ class Asteroid {
     }
   }
   display() {
-    noFill(); // Invisible hitbox
+    noFill();
     noStroke();
     if (this.size === 3) {
       circle(this.x, this.y, this.radius * 2);
@@ -281,7 +285,6 @@ class Asteroid {
     else {
       image(asteroid2, this.x, this.y, this.radius / 2, this.radius / 2);
     }
-
   }
   move() {
     this.x += this.dx;
@@ -331,7 +334,7 @@ function mousePressed() {
     }
   }
   if (colorButton.checkIfInside(mouseX, mouseY) && gameOver === false && start === false) {
-    if (shipColorCounter < 6) {
+    if (shipColorCounter < 7) {
       shipColorCounter++;
     }
     else {
@@ -341,7 +344,7 @@ function mousePressed() {
 }
 
 function checkBulletColision(bullet, asteroid) {
-  let distanceBetween = dist(bullet.x, bullet.y, asteroid.x, asteroid.y);
+  let distanceBetween = dist(bullet.bx, bullet.by, asteroid.x, asteroid.y);
   let radiSum = bullet.radius + asteroid.radius;
   if (distanceBetween < radiSum) {
     return true;
