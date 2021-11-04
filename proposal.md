@@ -10,7 +10,7 @@ Asteroids type game. (Space asteroid shooter)
 
 -Asteroids that come from a random direction and break up when in contact with the bullets.
 
--When something travels off of the screen, they are teleported to the oposite edge.
+-When something travels off of the screen, it is teleported to the oposite edge.
 
 -Main menu with buttons / settings.
 
