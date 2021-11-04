@@ -34,6 +34,8 @@ let bg, bg2, bg3;
 let whiteS, redS, orangeS, yellowS, greenS, blueS, indigoS, violetS;
 let asteroid4, asteroid3, asteroid2, asteroid1;
 
+
+
 function preload() {
   bg =  loadImage("assets/stars.jpg");
   bg2 = loadImage("assets/space.gif");
@@ -77,7 +79,7 @@ function draw() {
       let hasRemovedSomething = false;
       for (let i = bulletArray.length - 1; i>=0; i--){
         for (let j = asteroidArray.length - 1; j>=0; j--){
-          if (!hasRemovedSomething && checkBulletColision(bulletArray[i], asteroidArray[j])) {
+          if (!hasRemovedSomething && checkCollision(bulletArray[i], asteroidArray[j])) {
             points += 1;
             asteroidArray.splice(j, 1);
             bulletArray.splice(i, 1);
@@ -89,6 +91,8 @@ function draw() {
       displayShip();
       checkIfOnScreen();
       displayPoints();
+      checkShipCollision();
+      spawnAsteroids();
     }
   }
 }
@@ -115,6 +119,7 @@ function displayShip() {
   // vertex(-15, -10);
   // vertex(15, 0);
   // endShape();
+  //circle(0, 0, 28);
   image(shipColors[shipColorCounter], 0, 0, 35, 35);
   pop();
 }
@@ -133,6 +138,16 @@ function moveShip() {
   else {
     stopMoving();
     thrust = false;
+  }
+}
+
+function checkShipCollision () {
+  for (let asteroid of asteroidArray) {
+    let distanceBetween = dist(x, y, asteroid.x, asteroid.y);
+    let radiSum = 14 + asteroid.radius;
+    if (distanceBetween < radiSum) {
+      gameOver = true;
+    }
   }
 }
 
@@ -240,7 +255,7 @@ function keyPressed() { //Shoot
   }
 }
 
-//----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//Asteroids ----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 class Asteroid {
   constructor() {
@@ -253,6 +268,7 @@ class Asteroid {
     this.dx = cos(this.angle) * 2;
     this.dy = sin(this.angle) * 2;
     this.size = 3;
+    this.r = 5;
   }
   side() {
     if (this.randomSide === 1) {
@@ -275,6 +291,10 @@ class Asteroid {
   display() {
     noFill();
     noStroke();
+    // this.r += 5;
+    push();
+    // translate(this.x, this.y);
+    // rotate(this.r);
     if (this.size === 3) {
       circle(this.x, this.y, this.radius * 2);
       image(asteroid4, this.x, this.y, this.radius * 2, this.radius * 2);
@@ -285,28 +305,30 @@ class Asteroid {
     else {
       image(asteroid2, this.x, this.y, this.radius / 2, this.radius / 2);
     }
+    pop();
   }
   move() {
     this.x += this.dx;
     this.y += this.dy;
   }
-  rotate() {
-    rotate(this.r);
+}
+
+function spawnAsteroids() {
+  if (frameCount % (difficulty * 50) === 0) {
+    for (let i = 0; i < 5; i++) {
+      let myAsteroid = new Asteroid();
+      asteroidArray.push(myAsteroid);
+    }
+    // for (let c = asteroidArray.length-1; c > asteroidArray.length - 6; c--) {
+    //   asteroidArray[c].side();
+    // }
   }
 }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function mousePressed() {
-  for (let i = 0; i < 5; i++) {
-    let myAsteroid = new Asteroid();
-    asteroidArray.push(myAsteroid);
-  }
-  for (let asteroid of asteroidArray) {
-    asteroid.side();
-  }
   if (startButton.checkIfInside(mouseX, mouseY) && gameOver === false && start === false) {
-    //snakeFramerate = difficulty * 5;
     start = true;
   }
   if (difficultyButton.checkIfInside(mouseX, mouseY) && difficulty > 1 && gameOver === false && start === false) {
@@ -343,7 +365,7 @@ function mousePressed() {
   }
 }
 
-function checkBulletColision(bullet, asteroid) {
+function checkCollision(bullet, asteroid) {
   let distanceBetween = dist(bullet.bx, bullet.by, asteroid.x, asteroid.y);
   let radiSum = bullet.radius + asteroid.radius;
   if (distanceBetween < radiSum) {
@@ -396,6 +418,7 @@ function startScreen() {
   difficultyButton.display();
   colorButton = new Button (400, "Color: " + str(shipColor[shipColorCounter]));
   colorButton.display();
+  //shipPreview();
 }
 
 function gameOverScreen(endPoints, difficulty) {

@@ -6,6 +6,3 @@
 - Add waves.
 
 - Add a way to lose.
-
-# Person 2
-- Change the way it shoots. x = (width - x).
