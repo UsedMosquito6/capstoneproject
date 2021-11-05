@@ -37,6 +37,8 @@ let difficulty = 3;
 let bg, bg2, bg3;
 let whiteS, redS, orangeS, yellowS, greenS, blueS, indigoS, violetS;
 let asteroid4, asteroid3, asteroid2, asteroid1;
+let bgMusic;
+let bgMusicEnabled = true;
 
 
 
@@ -59,6 +61,8 @@ function preload() {
   asteroid4 = loadImage("assets/asteroid4.png");
   asteroid3 = loadImage("assets/asteroid3.png");
   asteroid2 = loadImage("assets/asteroid2.png");
+
+  bgMusic = loadSound("assets/bgmusic.mp3");
 }
 
 function setup() {
@@ -91,6 +95,7 @@ function draw() {
         bullet.move();
       }
       // Removing Bullets and Asteroids After Collision
+      // hasRemovedSomething was added to stop iderating through the array, restart before trying to check an object that doesn't exist.
       let hasRemovedSomething = false;
       for (let i = bulletArray.length - 1; i>=0; i--){
         for (let j = asteroidArray.length - 1; j>=0; j--){
@@ -344,6 +349,10 @@ function spawnAsteroids() {
 
 // Mouse Pressed for Buttons
 function mousePressed() {
+  if (bgMusicEnabled === true) {
+    bgMusic.loop();
+    bgMusicEnabled = false;
+  }
   if (startButton.checkIfInside(mouseX, mouseY) && gameOver === false && start === false) {
     start = true;
   }
