@@ -37,7 +37,7 @@ let difficulty = 3;
 let bg, bg2, bg3;
 let whiteS, redS, orangeS, yellowS, greenS, blueS, indigoS, violetS;
 let asteroid4, asteroid3, asteroid2, asteroid1;
-let bgMusic;
+let bgMusic, shootSound;
 let bgMusicEnabled = true;
 
 
@@ -63,6 +63,7 @@ function preload() {
   asteroid2 = loadImage("assets/asteroid2.png");
 
   bgMusic = loadSound("assets/bgmusic.mp3");
+  shootSound = loadSound("assets/lazer1.flac");
 }
 
 function setup() {
@@ -262,6 +263,7 @@ function keyPressed() { //Shoot
   if (keyCode === 32) {
     let myBullet = new Bullet(x, y);
     bulletArray.push(myBullet);
+    shootSound.play();
   }
 }
 
